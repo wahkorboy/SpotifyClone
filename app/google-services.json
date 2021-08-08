@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "959685436230",
+    "project_id": "spotify-clone-78ce9",
+    "storage_bucket": "spotify-clone-78ce9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:959685436230:android:67f4432a895f0b69f63b47",
+        "android_client_info": {
+          "package_name": "com.wahkor.spotifyclone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "959685436230-fajnmi6nhmgjqoom97bssvoshfi7s137.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAngt3tmRX6VylGi6FU5v1SHsGcO7egu_8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "959685436230-fajnmi6nhmgjqoom97bssvoshfi7s137.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
