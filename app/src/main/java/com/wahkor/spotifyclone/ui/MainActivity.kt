@@ -1,8 +1,9 @@
-package com.wahkor.spotifyclone
+package com.wahkor.spotifyclone.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.bumptech.glide.RequestManager
+import com.wahkor.spotifyclone.R
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
