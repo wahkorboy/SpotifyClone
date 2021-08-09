@@ -1,10 +1,12 @@
 package com.wahkor.spotifyclone.exo
 
+import android.content.Context
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.*
+import android.util.Log
 import androidx.core.net.toUri
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -37,9 +39,9 @@ class FirebaseMusicSource @Inject constructor(
         }
     }
 
-    suspend fun fetchMediaData()= withContext(Dispatchers.IO){
+    fun fetchMediaData(context: Context){
         state=State.STATE_INITIALIZING
-        val allSongs=musicDatabase.getAllSongs()
+        val allSongs=musicDatabase.getAllSongs(context)
         songs=allSongs.map { song: Song ->
             MediaMetadataCompat.Builder()
                 .putString(METADATA_KEY_TITLE,song.title)

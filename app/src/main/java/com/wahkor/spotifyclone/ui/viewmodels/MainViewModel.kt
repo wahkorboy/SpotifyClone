@@ -13,8 +13,12 @@ import com.wahkor.spotifyclone.exo.isPlaying
 import com.wahkor.spotifyclone.exo.isPrepared
 import com.wahkor.spotifyclone.utils.Constants.MEDIA_ROOT_ID
 import com.wahkor.spotifyclone.utils.Resource
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class MainViewModel @ViewModelInject constructor(
+@HiltViewModel
+class MainViewModel @Inject constructor(
     private val musicServiceConnection: MusicServiceConnection
 ):ViewModel(){
     private val _mediaItems=MutableLiveData<Resource<List<Song>>>()

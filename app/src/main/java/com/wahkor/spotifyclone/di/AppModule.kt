@@ -23,8 +23,8 @@ object AppModule {
         @ApplicationContext context: Context
     )=Glide.with(context).setDefaultRequestOptions(
         RequestOptions()
-            .placeholder(R.drawable.ic_image)
-            .error(R.drawable.ic_image)
+            .placeholder(R.drawable.ic_music)
+            .error(R.drawable.ic_music)
             .diskCacheStrategy(DiskCacheStrategy.DATA)
     )
 
