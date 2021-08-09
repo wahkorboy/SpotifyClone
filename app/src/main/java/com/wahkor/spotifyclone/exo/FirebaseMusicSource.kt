@@ -66,7 +66,7 @@ class FirebaseMusicSource @Inject constructor(
         return concatenatingMediaSource
     }
 
-    fun asMediaItems()=songs.forEach { song ->
+    fun asMediaItems()=songs.map { song ->
         val disc = MediaDescriptionCompat.Builder()
             .setMediaUri(song.getString(METADATA_KEY_MEDIA_URI).toUri())
             .setTitle(song.description.title)
@@ -77,7 +77,7 @@ class FirebaseMusicSource @Inject constructor(
 
         MediaBrowserCompat.MediaItem(disc,FLAG_PLAYABLE)
 
-    }
+    }.toMutableList()
 
     fun whenReady(action : (Boolean) -> Unit):Boolean{
         return when(state){
