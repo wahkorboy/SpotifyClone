@@ -4,17 +4,17 @@ import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
 import com.wahkor.spotifyclone.data.entities.Song
+import kotlin.random.Random
 
 class Query {
     companion object{
         val storageMedia=ArrayList<Song>()
     }
 
-    private var imageUrl:String=""
+    private var imageUrl=ArrayList<String>()
     fun getTracks(context: Context){
-        if(imageUrl.isBlank()){
         getImage(context,MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-    }
+
         getAudioFile(context, MediaStore.Audio.Media.INTERNAL_CONTENT_URI,true)
         getAudioFile(context,MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,false)
         getImage(context,MediaStore.Images.Media.INTERNAL_CONTENT_URI)
@@ -29,8 +29,7 @@ class Query {
                     val path=cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
                     //println("path= $path")
                     if(path.substring(0,8)=="/storage"){
-                        imageUrl=path
-                        return
+                        imageUrl.add(path)
                     }
                 }
             }
@@ -55,7 +54,7 @@ class Query {
                             title,
                             artist,
                             path,
-                            imageUrl
+                            imageUrl[Random.nextInt(0,imageUrl.size-1)]
                         )
                     )
                 }
