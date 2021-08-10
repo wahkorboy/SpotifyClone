@@ -12,20 +12,8 @@ import com.wahkor.spotifyclone.R
 import com.wahkor.spotifyclone.data.entities.Song
 
 class AlbumArt {
-    fun getAlbumArt(context: Context, path:String): Bitmap {
 
-        val mmr= MediaMetadataRetriever()
-        mmr.setDataSource(path)
-        val data = mmr.embeddedPicture
-        data?.let {
-            return BitmapFactory.decodeByteArray(data, 0, data.size)
-        }
-        return ResourcesCompat.getDrawable(context.resources,
-            R.drawable.ic_music,null)!!.toBitmap()
-        //return context.resources.getDrawable(R.drawable.ic_baseline_music_note_24).toBitmap()
-    }
-
-   fun getImage(song: Song): Bitmap? {
+    fun getImage(song: Song): Bitmap? {
 
         val mmr= MediaMetadataRetriever()
         mmr.setDataSource(song.songUrl)
@@ -35,6 +23,10 @@ class AlbumArt {
         }
         return null
     }
+
+
+
+    //future function
     fun saveImageToStorage(context: Context, song: Song):String?{
         val pic=getImage(song)
         pic?.let { image ->
