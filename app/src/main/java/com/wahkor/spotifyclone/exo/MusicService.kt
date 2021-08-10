@@ -78,6 +78,7 @@ class MusicService : MediaBrowserServiceCompat() {
             MusicPlayerNotificationListener(this)
         ) {
             curSongDuration = exoPlayer.duration
+            Log.e("TAG", "onCreate: ${exoPlayer.duration}", )
         }
 
         val musicPlaybackPreparer = MusicPlaybackPrepare(firebaseMusicSource) {
