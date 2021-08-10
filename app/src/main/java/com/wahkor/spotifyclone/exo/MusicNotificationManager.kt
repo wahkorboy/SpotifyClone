@@ -35,7 +35,7 @@ init {
         DescriptionAdapter(mediaController),
         notificationListener
     ).apply {
-        setSmallIcon(R.drawable.ic_image)
+        setSmallIcon(R.drawable.ic_music)
         setMediaSessionToken(sessionToken)
     }
 }

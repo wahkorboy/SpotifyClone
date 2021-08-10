@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
 
     private val requestPermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-            if (granted) {
+            if (!granted) {
             }
 
         }
