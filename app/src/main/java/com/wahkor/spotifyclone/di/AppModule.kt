@@ -5,6 +5,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.wahkor.spotifyclone.R
+import com.wahkor.spotifyclone.adapter.SwipeSongAdapter
 import com.wahkor.spotifyclone.exo.MusicServiceConnection
 import dagger.Module
 import dagger.Provides
@@ -16,6 +17,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    @Singleton
+    @Provides
+    fun provideSwipeSongAdapter()=SwipeSongAdapter()
 
     @Singleton
     @Provides
