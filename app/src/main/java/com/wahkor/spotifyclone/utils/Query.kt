@@ -15,7 +15,9 @@ class Query {
     }
 
     private var imageUrl=""
+
     fun reloadData(context: Context){
+        //update storageMedia
         requestInitialing=true
         getTracks(context)
     }

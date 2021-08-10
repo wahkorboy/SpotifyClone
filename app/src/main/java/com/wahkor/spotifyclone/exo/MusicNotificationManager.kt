@@ -13,8 +13,10 @@ import com.bumptech.glide.request.transition.Transition
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.wahkor.spotifyclone.R
+import com.wahkor.spotifyclone.utils.AlbumArt
 import com.wahkor.spotifyclone.utils.Constants.NOTIFICATION_CHANNEL_ID
 import com.wahkor.spotifyclone.utils.Constants.NOTIFICATION_ID
+import com.wahkor.spotifyclone.utils.Query.Companion.storageMedia
 
 class MusicNotificationManager(
     private val context: Context,
@@ -65,8 +67,12 @@ init {
             player: Player,
             callback: PlayerNotificationManager.BitmapCallback
         ): Bitmap? {
-           Glide.with(context).asBitmap().load(mediaController.metadata.description.iconUri)
-               .into(object : CustomTarget<Bitmap>(){
+            val song=storageMedia.find{it.mediaId==mediaController.metadata.description.mediaId }
+            (song?.albumArt?.let { image ->
+                Glide.with(context).asBitmap().load(image)
+            }?:run{
+                Glide.with(context).asBitmap().load(R.drawable.ic_music)
+            }).into(object : CustomTarget<Bitmap>(){
                    override fun onResourceReady(
                        resource: Bitmap,
                        transition: Transition<in Bitmap>?

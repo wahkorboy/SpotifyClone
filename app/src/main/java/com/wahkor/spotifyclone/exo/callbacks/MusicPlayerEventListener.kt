@@ -7,7 +7,7 @@ import com.wahkor.spotifyclone.exo.MusicService
 
 class MusicPlayerEventListener(
     private val musicService: MusicService
-) : Player.EventListener{
+) : Player.Listener{
     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
         super.onPlayerStateChanged(playWhenReady, playbackState)
         if (playbackState==Player.STATE_READY && !playWhenReady){
