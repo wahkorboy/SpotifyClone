@@ -1,10 +1,8 @@
 package com.wahkor.spotifyclone.ui
 
-import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.media.session.PlaybackStateCompat
-import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
@@ -38,14 +36,14 @@ class MainActivity : AppCompatActivity() {
 
     private var curPlayingSong: Song?=null
     private var playbackState:PlaybackStateCompat?=null
-    @SuppressLint("LogNotTimber")
+
     private val requestPermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
             if(granted && Query.requestInitialing){
             Query().getTracks(this)
                 mainActivityScope.launch {
                     storageMedia.forEachIndexed{index,song ->
-                        val pic=AlbumArt().loadImageFromStorage(applicationContext,song)
+                        val pic=AlbumArt().getImage(song)
                         storageMedia[index].albumArt=pic
                     }
                 }
@@ -60,6 +58,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         requestPermission.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+        if ( ! Query.requestInitialing){
+            mainActivityScope.launch {
+                storageMedia.forEachIndexed{index, song ->
+                    if (song.albumArt==null){
+                        storageMedia[index].albumArt=AlbumArt().getImage(song)
+                    }
+                }
+            }
+        }
         subscribeToObservers()
         vpSong.adapter=swipeSongAdapter
         vpSong.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {

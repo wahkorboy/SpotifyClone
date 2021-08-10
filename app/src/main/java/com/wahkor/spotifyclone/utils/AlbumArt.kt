@@ -25,10 +25,10 @@ class AlbumArt {
         //return context.resources.getDrawable(R.drawable.ic_baseline_music_note_24).toBitmap()
     }
 
-   fun getAlbumArtOrNull(songUrl: String): Bitmap? {
+   fun getImage(song: Song): Bitmap? {
 
         val mmr= MediaMetadataRetriever()
-        mmr.setDataSource(songUrl)
+        mmr.setDataSource(song.songUrl)
         val data = mmr.embeddedPicture
         data?.let {
             return BitmapFactory.decodeByteArray(data, 0, data.size)
@@ -36,7 +36,7 @@ class AlbumArt {
         return null
     }
     fun saveImageToStorage(context: Context, song: Song):String?{
-        val pic=getAlbumArtOrNull(song.songUrl)
+        val pic=getImage(song)
         pic?.let { image ->
                 val filename="id_${song.mediaId}_art.png"
             val fos=context.openFileOutput(filename,MODE_PRIVATE)
@@ -45,7 +45,7 @@ class AlbumArt {
             return filename
         }?:return null
     }
-    @SuppressLint("LogNotTimber")
+
     fun loadImageFromStorage(context: Context, song: Song):Bitmap?{
         val files=context.filesDir.listFiles()
         files.find{ it.canRead() && it.isFile && it.name.equals("id_${song.mediaId}_art.png") }?.let {
