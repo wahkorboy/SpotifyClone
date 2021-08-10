@@ -9,15 +9,23 @@ import kotlin.random.Random
 
 class Query {
     companion object{
+        var requestInitialing: Boolean = true
+        private set
         val storageMedia=ArrayList<Song>()
     }
 
     private var imageUrl=""
+    fun reloadData(context: Context){
+        requestInitialing=true
+        getTracks(context)
+    }
     fun getTracks(context: Context){
-        getImage(context,MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-
-        getAudioFile(context, MediaStore.Audio.Media.INTERNAL_CONTENT_URI,true)
-        getAudioFile(context,MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,false)
+        if (requestInitialing){
+            getImage(context,MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            getAudioFile(context, MediaStore.Audio.Media.INTERNAL_CONTENT_URI,true)
+            getAudioFile(context,MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,false)
+        }
+        requestInitialing=false
 
     }
     @SuppressLint("Range")

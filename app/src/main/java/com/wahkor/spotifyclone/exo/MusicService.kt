@@ -56,10 +56,15 @@ class MusicService : MediaBrowserServiceCompat() {
         var curSongDuration = 0L
             private set
     }
+    private val musicServiceJob=Job()
+    private val musicServiceScope= CoroutineScope(Dispatchers.Main+musicServiceJob)
 
     override fun onCreate() {
         super.onCreate()
-        firebaseMusicSource.fetchMediaData(this)
+        musicServiceScope.launch {
+            firebaseMusicSource.fetchMediaData()
+        }
+        //firebaseMusicSource.fetchMediaData(this)
 
         val activityIntent = packageManager?.getLaunchIntentForPackage(packageName)?.let {
             PendingIntent.getActivity(this, 0, it, 0)
@@ -78,7 +83,6 @@ class MusicService : MediaBrowserServiceCompat() {
             MusicPlayerNotificationListener(this)
         ) {
             curSongDuration = exoPlayer.duration
-            Log.e("TAG", "onCreate: ${exoPlayer.duration}", )
         }
 
         val musicPlaybackPreparer = MusicPlaybackPrepare(firebaseMusicSource) {

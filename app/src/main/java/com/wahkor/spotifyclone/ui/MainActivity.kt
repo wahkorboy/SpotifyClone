@@ -34,7 +34,9 @@ class MainActivity : AppCompatActivity() {
     private var curPlayingSong: Song?=null
     private var playbackState:PlaybackStateCompat?=null
     private val requestPermission =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            if(granted && Query.requestInitialing){
+            Query().getTracks(this)}
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
