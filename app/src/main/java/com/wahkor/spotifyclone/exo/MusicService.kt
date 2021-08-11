@@ -151,7 +151,7 @@ class MusicService : MediaBrowserServiceCompat() {
     ) {
         val selected=storageMedia.filter { it.subtitle.lowercase().contains("ariana") }
             .map { it.mediaId }
-        firebaseMusicSource.createSelected(selected)
+        //firebaseMusicSource.createSelected(selected)
         setupPlayer(firebaseMusicSource.selectedSongs)
 
         when(parentId) {
