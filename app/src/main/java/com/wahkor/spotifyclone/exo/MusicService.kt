@@ -6,7 +6,6 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
-import android.util.Log
 import androidx.media.MediaBrowserServiceCompat
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -18,11 +17,13 @@ import com.wahkor.spotifyclone.exo.callbacks.MusicPlayerEventListener
 import com.wahkor.spotifyclone.exo.callbacks.MusicPlayerNotificationListener
 import com.wahkor.spotifyclone.utils.Constants.MEDIA_ROOT_ID
 import com.wahkor.spotifyclone.utils.Constants.NETWORK_ERROR
+import com.wahkor.spotifyclone.utils.Query.Companion.storageMedia
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
 private const val SERVICE_TAG = "MusicService"
+ private const val TAG="MusicServiceTag"
 
 @AndroidEntryPoint
 class MusicService : MediaBrowserServiceCompat() {
@@ -64,7 +65,6 @@ class MusicService : MediaBrowserServiceCompat() {
         musicServiceScope.launch {
             firebaseMusicSource.fetchMediaData()
         }
-        //firebaseMusicSource.fetchMediaData(this)
 
         val activityIntent = packageManager?.getLaunchIntentForPackage(packageName)?.let {
             PendingIntent.getActivity(this, 0, it, 0)
@@ -84,11 +84,20 @@ class MusicService : MediaBrowserServiceCompat() {
         ) {
             curSongDuration = exoPlayer.duration
         }
+        //setupPlayer(firebaseMusicSource.songs)
+    }
+
+    private inner class MusicQueueNavigator : TimelineQueueNavigator(mediaSession) {
+        override fun getMediaDescription(player: Player, windowIndex: Int): MediaDescriptionCompat {
+            return firebaseMusicSource.songs[windowIndex].description
+        }
+    }
+    private fun setupPlayer(selected:List<MediaMetadataCompat>){
 
         val musicPlaybackPreparer = MusicPlaybackPrepare(firebaseMusicSource) {
             curPlayingSong = it
             preparePlayer(
-                firebaseMusicSource.songs,
+                selected,
                 it,
                 true
             )
@@ -102,12 +111,6 @@ class MusicService : MediaBrowserServiceCompat() {
         musicPlayerEventListener = MusicPlayerEventListener(this)
         exoPlayer.addListener(musicPlayerEventListener)
         musicNotificationManager.showNotification(exoPlayer)
-    }
-
-    private inner class MusicQueueNavigator : TimelineQueueNavigator(mediaSession) {
-        override fun getMediaDescription(player: Player, windowIndex: Int): MediaDescriptionCompat {
-            return firebaseMusicSource.songs[windowIndex].description
-        }
     }
 
     private fun preparePlayer(
@@ -146,6 +149,11 @@ class MusicService : MediaBrowserServiceCompat() {
         parentId: String,
         result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
+        val selected=storageMedia.filter { it.subtitle.lowercase().contains("ariana") }
+            .map { it.mediaId }
+        firebaseMusicSource.createSelected(selected)
+        setupPlayer(firebaseMusicSource.selectedSongs)
+
         when(parentId) {
             MEDIA_ROOT_ID -> {
                 val resultsSent = firebaseMusicSource.whenReady { isInitialized ->
