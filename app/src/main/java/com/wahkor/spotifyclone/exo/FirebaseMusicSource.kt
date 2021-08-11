@@ -17,7 +17,6 @@ class FirebaseMusicSource @Inject constructor(
     private val musicDatabase: MusicDatabase
 ) {
     var songs = emptyList<MediaMetadataCompat>()
-    var selectedSongs= emptyList<MediaMetadataCompat>()
     private val onReadyListeners= mutableListOf< (Boolean) -> Unit >()
     private var state=State.STATE_CREATED
     set(value){
@@ -36,7 +35,7 @@ class FirebaseMusicSource @Inject constructor(
         }
     }
 
-    suspend fun fetchMediaData(){
+    suspend fun fetchMediaData(filter:List<String>){
         state=State.STATE_INITIALIZING
         val allSongs=musicDatabase.getAllSongs()
         songs=allSongs.map { song: Song ->
@@ -51,8 +50,7 @@ class FirebaseMusicSource @Inject constructor(
                 .putString(METADATA_KEY_ALBUM_ART_URI,song.imageUrl)
                 .putString(METADATA_KEY_DISPLAY_DESCRIPTION,song.subtitle)
                 .build()
-        }
-        selectedSongs=songs
+        }.filter {filter.contains(it.description.mediaId ) }
         state=State.STATE_INITIALIZED
     }
 
@@ -67,7 +65,7 @@ class FirebaseMusicSource @Inject constructor(
     }
 
     fun asMediaItems(): MutableList<MediaBrowserCompat.MediaItem> {
-        return selectedSongs.map { song ->
+        return songs.map { song ->
             val disc = MediaDescriptionCompat.Builder()
                 .setMediaUri(song.getString(METADATA_KEY_MEDIA_URI).toUri())
                 .setTitle(song.description.title)
@@ -94,10 +92,6 @@ class FirebaseMusicSource @Inject constructor(
         }
     }
 
-    fun createSelected(list: List<String>): List<MediaMetadataCompat> {
-        selectedSongs=songs.filter {list.contains(it.description.mediaId)  }
-        return selectedSongs
-    }
 }
 
 enum class State{
