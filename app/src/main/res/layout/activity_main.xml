@@ -6,7 +6,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.MainActivity">
-
+<LinearLayout
+    app:layout_constraintStart_toStartOf="@+id/rootLayout"
+    app:layout_constraintTop_toTopOf="@+id/rootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:id="@+id/tabs"
+    >
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="All"
+        android:id="@+id/btn_all"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_height="wrap_content"
+        android:text="ariana"
+        android:id="@+id/btn_ariana"/>
+</LinearLayout>
     <FrameLayout
         android:id="@+id/flFragmentContainer"
         android:layout_width="match_parent"
@@ -15,7 +35,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/tabs">
 
         <fragment
             android:id="@+id/navHostFragment"
