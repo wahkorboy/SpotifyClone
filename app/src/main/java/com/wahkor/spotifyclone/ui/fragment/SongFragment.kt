@@ -62,7 +62,10 @@ class SongFragment:Fragment(R.layout.fragment_song) {
 
     private fun updateTitleAndSongImage(song: Song){
         (song.title + " - " + song.subtitle).also { tvSongName.text = it }
-        glide.load(song.imageUrl).into(ivSongImage)
+        song.albumArt?.let { img ->
+            glide.load(img).into(ivSongImage)}?: kotlin.run {
+            glide.load(R.drawable.ic_music).into(ivSongImage)
+        }
 
     }
 
