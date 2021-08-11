@@ -98,8 +98,14 @@ class MainActivity : AppCompatActivity() {
                 else -> showBottomBar(true)
             }
         }
-
+        btn_all.setOnClickListener {
+            mainViewModel.setSubscribe(true)
+        }
+        btn_ariana.setOnClickListener {
+            mainViewModel.setSubscribe(false)
+        }
     }
+
 
     private fun showBottomBar(visibility:Boolean){
         ivCurSongImage.isVisible=visibility

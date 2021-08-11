@@ -7,11 +7,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.wahkor.spotifyclone.data.entities.Song
-import com.wahkor.spotifyclone.exo.MusicServiceConnection
-import com.wahkor.spotifyclone.exo.isPlayEnabled
-import com.wahkor.spotifyclone.exo.isPlaying
-import com.wahkor.spotifyclone.exo.isPrepared
+import com.wahkor.spotifyclone.exo.*
 import com.wahkor.spotifyclone.utils.Constants.MEDIA_ROOT_ID
+import com.wahkor.spotifyclone.utils.Query.Companion.storageMedia
 import com.wahkor.spotifyclone.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,7 +28,7 @@ class MainViewModel @Inject constructor(
 
     init {
         _mediaItems.postValue(Resource.loading(null))
-        musicServiceConnection.subscript(MEDIA_ROOT_ID,object:MediaBrowserCompat.SubscriptionCallback(){
+       /* musicServiceConnection.subscript(MEDIA_ROOT_ID,object:MediaBrowserCompat.SubscriptionCallback(){
             override fun onChildrenLoaded(
                 parentId: String,
                 children: MutableList<MediaBrowserCompat.MediaItem>
@@ -46,7 +44,7 @@ class MainViewModel @Inject constructor(
                 }
                 _mediaItems.postValue(Resource.success(items))
             }
-        })
+        })*/
     }
 
     fun skipToNextSong()=musicServiceConnection.transportControls.skipToNext()
@@ -71,5 +69,31 @@ class MainViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         musicServiceConnection.unSubscript(MEDIA_ROOT_ID,object :MediaBrowserCompat.SubscriptionCallback(){ })
+    }
+
+    fun setSubscribe(isAll:Boolean){
+        MusicService.selected= if (isAll) {
+            storageMedia.map { it.mediaId }
+        } else {
+            storageMedia.filter { it.subtitle.lowercase().contains("ariana") }.map { it.mediaId }
+        }
+        musicServiceConnection.unSubscript(MEDIA_ROOT_ID,object :MediaBrowserCompat.SubscriptionCallback(){ })
+        musicServiceConnection.subscript(MEDIA_ROOT_ID,object:MediaBrowserCompat.SubscriptionCallback(){
+            override fun onChildrenLoaded(
+                parentId: String,
+                children: MutableList<MediaBrowserCompat.MediaItem>
+            ) {
+                super.onChildrenLoaded(parentId, children)
+                val items=children.map{
+                    Song(it.mediaId!!,
+                        it.description.title.toString(),
+                        it.description.subtitle.toString(),
+                        it.description.mediaUri.toString(),
+                        it.description.iconUri.toString()
+                    )
+                }
+                _mediaItems.postValue(Resource.success(items))
+            }
+        })
     }
 }

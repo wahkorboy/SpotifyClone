@@ -2,15 +2,10 @@ package com.wahkor.spotifyclone.exo
 
 import android.support.v4.media.MediaMetadataCompat
 import com.wahkor.spotifyclone.data.entities.Song
+import com.wahkor.spotifyclone.utils.Query.Companion.storageMedia
 
 fun MediaMetadataCompat.toSong(): Song? {
     return description?.let {
-        Song(
-            it.mediaId?:"",
-            it.title.toString(),
-            it.subtitle.toString(),
-            it.mediaUri.toString(),
-            it.iconUri.toString()
-        )
+        storageMedia.find { song -> song.mediaId==it.mediaId }
     }
 }

@@ -148,6 +148,9 @@ class MusicService : MediaBrowserServiceCompat() {
         result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
 
+
+
+
         when(parentId) {
             MEDIA_ROOT_ID -> {
                 val resultsSent = firebaseMusicSource.whenReady { isInitialized ->
@@ -167,6 +170,11 @@ class MusicService : MediaBrowserServiceCompat() {
                 }
             }
         }
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        notifyChildrenChanged(parentid="")
+        return super.onStartCommand(intent, flags, startId)
     }
 }
 
