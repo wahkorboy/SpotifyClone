@@ -6,6 +6,7 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
+import android.util.Log
 import androidx.media.MediaBrowserServiceCompat
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -107,7 +108,7 @@ class MusicService : MediaBrowserServiceCompat() {
 
     private inner class MusicQueueNavigator : TimelineQueueNavigator(mediaSession) {
         override fun getMediaDescription(player: Player, windowIndex: Int): MediaDescriptionCompat {
-            return firebaseMusicSource.songs[windowIndex].description
+            return firebaseMusicSource.selectedSong[windowIndex].description
         }
     }
 
@@ -116,7 +117,8 @@ class MusicService : MediaBrowserServiceCompat() {
         itemToPlay: MediaMetadataCompat?,
         playNow: Boolean
     ) {
-        val curSongIndex = if(curPlayingSong == null) 0 else songs.indexOf(itemToPlay)
+        Log.e(TAG, "preparePlayer: item to play ${itemToPlay?.description?.title}", )
+        val curSongIndex = if(curPlayingSong == null) 0 else firebaseMusicSource.selectedSong.indexOf(itemToPlay)
         exoPlayer.prepare(firebaseMusicSource.asMediaSource(dataSourceFactory))
         exoPlayer.seekTo(curSongIndex, 0L)
         exoPlayer.playWhenReady = playNow
@@ -147,17 +149,15 @@ class MusicService : MediaBrowserServiceCompat() {
         parentId: String,
         result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
-
-
-
+        firebaseMusicSource.createSelected(parentId)
 
         when(parentId) {
-            MEDIA_ROOT_ID -> {
+            else-> {
                 val resultsSent = firebaseMusicSource.whenReady { isInitialized ->
                     if(isInitialized) {
                         result.sendResult(firebaseMusicSource.asMediaItems())
-                        if(!isPlayerInitialized && firebaseMusicSource.songs.isNotEmpty()) {
-                            preparePlayer(firebaseMusicSource.songs, firebaseMusicSource.songs[0], false)
+                        if(!isPlayerInitialized && firebaseMusicSource.selectedSong.isNotEmpty()) {
+                            preparePlayer(firebaseMusicSource.selectedSong, firebaseMusicSource.selectedSong[0], false)
                             isPlayerInitialized = true
                         }
                     } else {
@@ -173,7 +173,6 @@ class MusicService : MediaBrowserServiceCompat() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        notifyChildrenChanged(parentid="")
         return super.onStartCommand(intent, flags, startId)
     }
 }

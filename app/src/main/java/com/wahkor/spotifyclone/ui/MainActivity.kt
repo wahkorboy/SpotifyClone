@@ -17,6 +17,7 @@ import com.wahkor.spotifyclone.exo.isPlaying
 import com.wahkor.spotifyclone.exo.toSong
 import com.wahkor.spotifyclone.ui.viewmodels.MainViewModel
 import com.wahkor.spotifyclone.utils.AlbumArt
+import com.wahkor.spotifyclone.utils.Constants.MEDIA_ROOT_ID
 import com.wahkor.spotifyclone.utils.Query
 import com.wahkor.spotifyclone.utils.Query.Companion.storageMedia
 import com.wahkor.spotifyclone.utils.Status
@@ -99,10 +100,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
         btn_all.setOnClickListener {
-            mainViewModel.setSubscribe(true)
+            mainViewModel.setSubscribe(MEDIA_ROOT_ID)
         }
         btn_ariana.setOnClickListener {
-            mainViewModel.setSubscribe(false)
+            mainViewModel.setSubscribe("custom id")
         }
     }
 

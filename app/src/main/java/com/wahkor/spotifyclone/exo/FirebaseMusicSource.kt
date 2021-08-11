@@ -11,12 +11,14 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.wahkor.spotifyclone.data.entities.Song
 import com.wahkor.spotifyclone.data.remote.MusicDatabase
+import com.wahkor.spotifyclone.utils.Constants.MEDIA_ROOT_ID
 import javax.inject.Inject
 
 class FirebaseMusicSource @Inject constructor(
     private val musicDatabase: MusicDatabase
 ) {
     var songs = emptyList<MediaMetadataCompat>()
+    var selectedSong=emptyList<MediaMetadataCompat>()
     private val onReadyListeners= mutableListOf< (Boolean) -> Unit >()
     private var state=State.STATE_CREATED
     set(value){
@@ -51,12 +53,13 @@ class FirebaseMusicSource @Inject constructor(
                 .putString(METADATA_KEY_DISPLAY_DESCRIPTION,song.subtitle)
                 .build()
         }.filter {filter.contains(it.description.mediaId ) }
+        selectedSong=songs
         state=State.STATE_INITIALIZED
     }
 
     fun asMediaSource(dataSourceFactory: DefaultDataSourceFactory):ConcatenatingMediaSource{
         val concatenatingMediaSource=ConcatenatingMediaSource()
-        songs.forEach { song ->
+        selectedSong.forEach { song ->
             val mediaSource=ProgressiveMediaSource.Factory(dataSourceFactory)
                 .createMediaSource(song.getString(METADATA_KEY_MEDIA_URI).toUri())
             concatenatingMediaSource.addMediaSource(mediaSource)
@@ -65,7 +68,7 @@ class FirebaseMusicSource @Inject constructor(
     }
 
     fun asMediaItems(): MutableList<MediaBrowserCompat.MediaItem> {
-        return songs.map { song ->
+        return selectedSong.map { song ->
             val disc = MediaDescriptionCompat.Builder()
                 .setMediaUri(song.getString(METADATA_KEY_MEDIA_URI).toUri())
                 .setTitle(song.description.title)
@@ -91,7 +94,10 @@ class FirebaseMusicSource @Inject constructor(
             }
         }
     }
-
+fun createSelected(id:String){
+    selectedSong=if (id==MEDIA_ROOT_ID) songs else songs.filter { it.description.subtitle.toString().lowercase()
+        .contains("ariana")}
+}
 }
 
 enum class State{

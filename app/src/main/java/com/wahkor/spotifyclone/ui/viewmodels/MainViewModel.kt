@@ -28,23 +28,7 @@ class MainViewModel @Inject constructor(
 
     init {
         _mediaItems.postValue(Resource.loading(null))
-       /* musicServiceConnection.subscript(MEDIA_ROOT_ID,object:MediaBrowserCompat.SubscriptionCallback(){
-            override fun onChildrenLoaded(
-                parentId: String,
-                children: MutableList<MediaBrowserCompat.MediaItem>
-            ) {
-                super.onChildrenLoaded(parentId, children)
-                val items=children.map{
-                    Song(it.mediaId!!,
-                        it.description.title.toString(),
-                        it.description.subtitle.toString(),
-                        it.description.mediaUri.toString(),
-                        it.description.iconUri.toString()
-                    )
-                }
-                _mediaItems.postValue(Resource.success(items))
-            }
-        })*/
+       setSubscribe(MEDIA_ROOT_ID)
     }
 
     fun skipToNextSong()=musicServiceConnection.transportControls.skipToNext()
@@ -71,14 +55,8 @@ class MainViewModel @Inject constructor(
         musicServiceConnection.unSubscript(MEDIA_ROOT_ID,object :MediaBrowserCompat.SubscriptionCallback(){ })
     }
 
-    fun setSubscribe(isAll:Boolean){
-        MusicService.selected= if (isAll) {
-            storageMedia.map { it.mediaId }
-        } else {
-            storageMedia.filter { it.subtitle.lowercase().contains("ariana") }.map { it.mediaId }
-        }
-        musicServiceConnection.unSubscript(MEDIA_ROOT_ID,object :MediaBrowserCompat.SubscriptionCallback(){ })
-        musicServiceConnection.subscript(MEDIA_ROOT_ID,object:MediaBrowserCompat.SubscriptionCallback(){
+    fun setSubscribe(id:String){
+        musicServiceConnection.subscript(id,object:MediaBrowserCompat.SubscriptionCallback(){
             override fun onChildrenLoaded(
                 parentId: String,
                 children: MutableList<MediaBrowserCompat.MediaItem>
